@@ -12,12 +12,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //binding
         val bind: ActivityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        val soraViewModel = SoraViewModel()
 
-        SoraViewModel().getTitleList("2016", "4",
-                { list ->
-                    val adapter = TitleListAdapter(this)
-                    adapter.addAll(list)
-                    bind.listView.adapter = adapter
-                })
+        bind.spinner.adapter = CoursAdapter(this, soraViewModel.getCoursList())
+
+        soraViewModel.getTitleList("2016", "4")
+                .subscribe(
+                        { list ->
+                            val adapter = TitleListAdapter(this)
+                            adapter.addAll(list)
+                            bind.listView.adapter = adapter
+                        })
     }
 }

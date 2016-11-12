@@ -13,7 +13,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
 /**
- * ShangriLa API ShangriLa クライアントインタフェース/Dao
+ * ShangriLa API クライアントインタフェース/Dao
  * Created by lowput on 2016/09/18.
  */
 data class Cours(
@@ -36,10 +36,20 @@ class SoraDao() {
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .build().create(SoraClient::class.java)
 
-    fun getTitleList(year: String, course: String): Observable<List<String>> {
+    val cours: List<Cours> = getCoursList()
+
+    private fun getCoursList(): List<Cours> {
+        return soraClient.cours()
+                .subscribeOn(Schedulers.io())
+                .map { it.map(Map.Entry<Int, Cours>::value) }
+                .toBlocking()
+                .first()
+    }
+
+    fun getMaster(year: String, course: String): Observable<List<Sora>> {
         return soraClient.get(year, course)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map {list -> list.map(Sora::title)}
+                .map { it.toList() }
     }
 }

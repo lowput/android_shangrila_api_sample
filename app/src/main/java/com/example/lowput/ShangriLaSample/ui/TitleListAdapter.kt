@@ -19,9 +19,8 @@ class TitleListAdapter(context: Context) : ArrayAdapter<String>(context, 0) {
     override fun getView(position: Int,
                          convertView: View?,
                          parent: ViewGroup?): View {
-        val view = convertView ?: inflater.inflate(R.layout.parts_list_anime_title, parent, false)
-        view as TextView
-        view.text = getItem(position)
-        return view
+        val layout = convertView ?: inflater.inflate(R.layout.parts_list_anime_title, parent, false)
+        (layout.findViewById(R.id.anime_title) as TextView).text = getItem(position)
+        return layout
     }
 }

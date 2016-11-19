@@ -36,17 +36,14 @@ class SoraDao() {
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .build().create(SoraClient::class.java)
 
-    val cours: List<Cours> = getCoursList()
+    val cours: List<Cours> = soraClient.cours()
+            .subscribeOn(Schedulers.io())
+            .map { it.map(Map.Entry<Int, Cours>::value) }
+            .onErrorReturn({ throwable -> emptyList() })
+            .toBlocking()
+            .first()
 
-    private fun getCoursList(): List<Cours> {
-        return soraClient.cours()
-                .subscribeOn(Schedulers.io())
-                .map { it.map(Map.Entry<Int, Cours>::value) }
-                .toBlocking()
-                .first()
-    }
-
-    fun getMaster(year: String, course: String): Observable<List<Sora>> {
+    fun master(year: String, course: String): Observable<List<Sora>> {
         return soraClient.get(year, course)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

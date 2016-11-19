@@ -13,17 +13,23 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatSpinner
-            android:id="@+id/spinner"
-            style="@android:style/Widget.Holo.Light.Spinner"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:background="@color/colorPrimary">
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spinner"
+                style="@android:style/Widget.Holo.Light.Spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </android.support.v7.widget.Toolbar>
 
         <ListView
             android:id="@+id/listView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </layout>

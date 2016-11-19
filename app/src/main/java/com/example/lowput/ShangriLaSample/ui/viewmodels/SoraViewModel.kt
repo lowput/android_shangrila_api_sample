@@ -12,10 +12,12 @@ import rx.Observable
 class SoraViewModel {
     private val sora = SoraDao()
 
-    fun getTitleList(year: String, course: String): Observable<List<String>> =
-            sora.getMaster(year, course).map { it.map(Sora::title) }
+    fun getMasterList(year: String, course: String): Observable<List<Sora>> =
+            sora.master(year, course)
 
     fun getCoursList(): List<Cours> {
         return sora.cours.sortedBy(Cours::id)
     }
+
+    fun isEmpty() = sora.cours.isEmpty()
 }

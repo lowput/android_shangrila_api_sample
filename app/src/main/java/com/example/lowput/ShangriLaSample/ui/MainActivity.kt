@@ -20,23 +20,24 @@ class MainActivity : AppCompatActivity() {
 
         val soraViewModel = SoraViewModel()
 
-        if (!soraViewModel.isEmpty()) {
-            val adapter = TitleListAdapter(this)
-            val coursAdapter = CoursAdapter(this, soraViewModel.getCoursList(), {
-                year, cours ->
-                soraViewModel.getMasterList(year, cours)
-                        .subscribe({
-                            list ->
-                            adapter.clear()
-                            adapter.addAll(list)
-                            bind.listView.adapter = adapter
-                        }, { onError() })
-            })
-            bind.spinner.adapter = coursAdapter
-            bind.spinner.onItemSelectedListener = coursAdapter
-        } else {
+        if (soraViewModel.isCoursEmpty()) {
             onError()
+            return
         }
+
+        val adapter = TitleListAdapter(this)
+        val coursAdapter = CoursAdapter(this, soraViewModel.getCoursList(), {
+            cours ->
+            soraViewModel.getMasterList(cours)
+                    .subscribe({
+                        list ->
+                        adapter.clear()
+                        adapter.addAll(list)
+                        bind.listView.adapter = adapter
+                    }, { onError() })
+        })
+        bind.spinner.adapter = coursAdapter
+        bind.spinner.onItemSelectedListener = coursAdapter
     }
 
     fun onError() {

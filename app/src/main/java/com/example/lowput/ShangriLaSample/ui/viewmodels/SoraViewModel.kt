@@ -1,7 +1,9 @@
 package com.example.lowput.ShangriLaSample.ui.viewmodels
 
-import com.example.lowput.ShangriLaSample.dao.Cours
+import com.example.lowput.ShangriLaSample.dao.SoraAPI
+import com.example.lowput.ShangriLaSample.dao.SoraClient
 import com.example.lowput.ShangriLaSample.dao.SoraDao
+import com.example.lowput.ShangriLaSample.models.Cours
 import com.example.lowput.ShangriLaSample.models.Sora
 import rx.Observable
 
@@ -12,12 +14,14 @@ import rx.Observable
 class SoraViewModel {
     private val sora = SoraDao()
 
-    fun getMasterList(year: String, course: String): Observable<List<Sora>> =
-            sora.master(year, course)
+    fun getMasterList(cours: Cours): Observable<List<Sora>> =
+            sora.syncSoraData(cours)
 
     fun getCoursList(): List<Cours> {
-        return sora.cours.sortedBy(Cours::id)
+        return sora.cours()
     }
 
-    fun isEmpty() = sora.cours.isEmpty()
+    fun isCoursEmpty(): Boolean {
+        return sora.cours().isEmpty()
+    }
 }

@@ -1,23 +1,27 @@
 package com.example.lowput.ShangriLaSample.ui.viewmodels
 
-import com.example.lowput.ShangriLaSample.dao.Cours
 import com.example.lowput.ShangriLaSample.dao.SoraDao
+import com.example.lowput.ShangriLaSample.models.Cours
 import com.example.lowput.ShangriLaSample.models.Sora
+import io.realm.Realm
 import rx.Observable
 
 /**
  * アニメタイトルViewModel
  * Created by lowput on 2016/11/05.
  */
-class SoraViewModel {
-    private val sora = SoraDao()
+class SoraViewModel(val realm: Realm) {
 
-    fun getMasterList(year: String, course: String): Observable<List<Sora>> =
-            sora.master(year, course)
+    private val sora = SoraDao(realm)
+
+    fun getMasterList(cours: Cours): Observable<List<Sora>> =
+            sora.syncSoraData(cours)
 
     fun getCoursList(): List<Cours> {
-        return sora.cours.sortedBy(Cours::id)
+        return sora.cours()
     }
 
-    fun isEmpty() = sora.cours.isEmpty()
+    fun isCoursEmpty(): Boolean {
+        return sora.cours().isEmpty()
+    }
 }

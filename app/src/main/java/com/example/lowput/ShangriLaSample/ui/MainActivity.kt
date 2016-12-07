@@ -7,6 +7,8 @@ import android.widget.Toast
 import com.example.lowput.ShangriLaSample.R
 import com.example.lowput.ShangriLaSample.databinding.ActivityMainBinding
 import com.example.lowput.ShangriLaSample.ui.viewmodels.SoraViewModel
+import io.realm.Realm
+import io.realm.RealmConfiguration
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,25 +20,28 @@ class MainActivity : AppCompatActivity() {
         bind.toolbar.title = "Anime API"
         setSupportActionBar(bind.toolbar)
 
-        val soraViewModel = SoraViewModel()
+        Realm.setDefaultConfiguration(RealmConfiguration.Builder(this).build())
+        val realm : Realm = Realm.getDefaultInstance()
+        val soraViewModel = SoraViewModel(realm)
 
-        if (!soraViewModel.isEmpty()) {
-            val adapter = TitleListAdapter(this)
-            val coursAdapter = CoursAdapter(this, soraViewModel.getCoursList(), {
-                year, cours ->
-                soraViewModel.getMasterList(year, cours)
-                        .subscribe({
-                            list ->
-                            adapter.clear()
-                            adapter.addAll(list)
-                            bind.listView.adapter = adapter
-                        }, { onError() })
-            })
-            bind.spinner.adapter = coursAdapter
-            bind.spinner.onItemSelectedListener = coursAdapter
-        } else {
+        if (soraViewModel.isCoursEmpty()) {
             onError()
+            return
         }
+
+        val adapter = TitleListAdapter(this)
+        val coursAdapter = CoursAdapter(this, soraViewModel.getCoursList(), {
+            cours ->
+            soraViewModel.getMasterList(cours)
+                    .subscribe({
+                        list ->
+                        adapter.clear()
+                        adapter.addAll(list)
+                        bind.listView.adapter = adapter
+                    }, { onError() })
+        })
+        bind.spinner.adapter = coursAdapter
+        bind.spinner.onItemSelectedListener = coursAdapter
     }
 
     fun onError() {

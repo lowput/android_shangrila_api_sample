@@ -10,7 +10,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import rx.Observable
-import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
 /**
@@ -35,7 +34,6 @@ class SoraClient() {
 
     val cours: List<Cours> = soraClient.cours()
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .map { it.map(Map.Entry<Int, Cours>::value) }
             .onErrorReturn({ throwable -> emptyList() })
             .toBlocking()

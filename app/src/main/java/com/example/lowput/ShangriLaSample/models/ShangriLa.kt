@@ -12,27 +12,26 @@ import io.realm.annotations.RealmClass
 
 const val ShangriLaURL: String = "http://api.moemoe.tokyo/"
 
-@RealmClass
-open class Cours(
-        var id: Int,
-        var year: Int,
-        var cours: Int) : RealmObject()
+data class Cours(
+        val id: Int,
+        val year: Int,
+        val cours: Int)
 
 @RealmClass
 open class Sora(
-        var title_short2: String? = null,
-        var twitter_account: String? = null,
-        var public_url: String? = null,
-        var title_short1: String? = null,
-        var sex: Int = 0,
-        var twitter_hash_tag: String? = null,
-        var id: Int = 0,
-        var sequel: Int = 0,
-        var created_at: String? = null,
-        var cours_id: String? = null,
-        var title: String? = null,
-        var title_short3: String? = null,
-        var updated_at: String? = null) : RealmObject()
+        open var title_short2: String? = null,
+        open var twitter_account: String? = null,
+        open var public_url: String? = null,
+        open var title_short1: String? = null,
+        open var sex: Int = 0,
+        open var twitter_hash_tag: String? = null,
+        open var id: Int = 0,
+        open var sequel: Int = 0,
+        open var created_at: String? = null,
+        open var cours_id: String? = null,
+        open var title: String? = null,
+        open var title_short3: String? = null,
+        open var updated_at: String? = null) : RealmObject()
 
 @RealmClass
 open class SoraList(

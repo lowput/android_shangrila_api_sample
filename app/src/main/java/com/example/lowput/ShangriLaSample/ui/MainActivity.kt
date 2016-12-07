@@ -7,6 +7,8 @@ import android.widget.Toast
 import com.example.lowput.ShangriLaSample.R
 import com.example.lowput.ShangriLaSample.databinding.ActivityMainBinding
 import com.example.lowput.ShangriLaSample.ui.viewmodels.SoraViewModel
+import io.realm.Realm
+import io.realm.RealmConfiguration
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,7 +20,9 @@ class MainActivity : AppCompatActivity() {
         bind.toolbar.title = "Anime API"
         setSupportActionBar(bind.toolbar)
 
-        val soraViewModel = SoraViewModel()
+        Realm.setDefaultConfiguration(RealmConfiguration.Builder(this).build())
+        val realm : Realm = Realm.getDefaultInstance()
+        val soraViewModel = SoraViewModel(realm)
 
         if (soraViewModel.isCoursEmpty()) {
             onError()

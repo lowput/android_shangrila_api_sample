@@ -25,7 +25,7 @@ interface SoraAPI {
     fun cours(): Observable<Map<Int, Cours>>
 }
 
-class SoraClient() {
+class SoraClient {
     val soraClient = Retrofit.Builder()
             .baseUrl(ShangriLaURL)
             .addConverterFactory(GsonConverterFactory.create(Gson()))

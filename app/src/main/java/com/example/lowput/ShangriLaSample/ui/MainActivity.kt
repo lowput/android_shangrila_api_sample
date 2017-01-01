@@ -37,9 +37,9 @@ class MainActivity : AppCompatActivity() {
                         list ->
                         adapter.clear()
                         adapter.addAll(list)
-                        bind.listView.adapter = adapter
                     }, { onError() })
         })
+        bind.listView.adapter = adapter
         bind.spinner.adapter = coursAdapter
         bind.spinner.onItemSelectedListener = coursAdapter
     }

@@ -10,6 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import rx.Observable
+import rx.Scheduler
 import rx.schedulers.Schedulers
 
 /**
@@ -42,6 +43,7 @@ class SoraClient {
     fun master(cours: Cours): Observable<List<Sora>> {
         return soraClient.get(cours.year.toString(), cours.cours.toString())
                 .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .map { it.toList() }
     }
 }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ShangriLa Sample</string>
+    <string name="toolbar_title">Anime API</string>
 </resources>

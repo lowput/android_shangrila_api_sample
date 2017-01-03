@@ -5,38 +5,48 @@ import com.example.lowput.ShangriLaSample.models.Sora
 import com.example.lowput.ShangriLaSample.models.SoraList
 import io.realm.Realm
 import io.realm.RealmResults
-import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
+import rx.subscriptions.CompositeSubscription
 
 /**
- * Realm データアクセス
+ * データアクセス
  * Created by lowput on 2016/11/20.
  */
-class SoraDao(private val realm: Realm) {
+class SoraDao {
+
+    val subscription: CompositeSubscription = CompositeSubscription()
+
     private val soraClient = SoraClient()
 
-    fun syncSoraData(cours: Cours): Observable<List<Sora>> {
-        val relmResult: RealmResults<SoraList> = realm.where(SoraList::class.java).equalTo("id", cours.id).findAll()
+    fun syncSoraData(cours: Cours,
+                     setTitle: (cours: List<Sora>) -> Unit,
+                     onError: (Unit) -> Unit) {
+        val relmResult: RealmResults<SoraList> = Realm.getDefaultInstance().where(SoraList::class.java).equalTo("id", cours.id).findAll()
         if (relmResult.isEmpty()) {
-            return soraClient.master(cours)
+            subscription.add(soraClient.master(cours)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext {
                         list ->
-                        realm.executeTransaction {
-                            val soraList = realm.createObject(SoraList::class.java)
-                            soraList.id = cours.id
-                            list.forEach { soraList.data.add(it) }
+                        Realm.getDefaultInstance().use { realm ->
+                            realm.executeTransaction {
+                                val soraList = realm.createObject(SoraList::class.java)
+                                soraList.id = cours.id
+                                list.forEach { soraList.data.add(it) }
+                            }
                         }
                     }
+                    .subscribe({
+                        setTitle(it)
+                    }, { onError })
+            )
         } else {
-            return relmResult.asObservable()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .filter { it.isLoaded }
-                    .map { it.first().data }
+            setTitle(relmResult.first().data)
         }
     }
 
     fun cours(): List<Cours> {
         return soraClient.cours.sortedBy(Cours::id)
     }
+
+    fun onDestroy() = subscription.unsubscribe()
 }
